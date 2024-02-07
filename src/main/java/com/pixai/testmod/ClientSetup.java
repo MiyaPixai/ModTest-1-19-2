@@ -14,6 +14,5 @@ public class ClientSetup {
     public void ClientInit(){
         EntityRenderers.register(EntityRegistry.BLUE_BOKOBLIN.get(), BlueBokoblinRenderer::new);
         EntityRenderers.register(EntityRegistry.RED_BOKOBLIN.get(), RedBokoblinRenderer::new);
-
     }
 }
