@@ -14,7 +14,7 @@ public class BlueBokoblinRenderer extends HumanoidMobRenderer<Mob, PiglinModel<M
     private static final ResourceLocation TEXTURE = new ResourceLocation("modtest:textures/entity/bokoblin/bokoblin_blue.png");
 
     public BlueBokoblinRenderer(EntityRendererProvider.Context context) {
-        super(context, createModel(context.getModelSet(), ModelLayers.PIGLIN, false), 34);
+        super(context, createModel(context.getModelSet(), ModelLayers.PIGLIN, false), 0.8f);
     }
 
     private static PiglinModel<Mob> createModel(EntityModelSet modelSet, ModelLayerLocation location, boolean hasEars) {

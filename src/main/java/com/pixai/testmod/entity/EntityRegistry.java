@@ -22,12 +22,12 @@ public class EntityRegistry {
     public static final DeferredRegister<EntityType<?>> ENTITY_REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Modtest.MODID);
     public static final RegistryObject<EntityType<RedBokoblin>> RED_BOKOBLIN = ENTITY_REGISTER.register("red_bokoblin", () ->
             EntityType.Builder.of(RedBokoblin::new, MobCategory.MONSTER)
-                    .sized(1.6F, 1.8F)
+                    .sized(0.6f, 1.8f)
                     .build("red_bokoblin"));
 
     public static final RegistryObject<EntityType<BlueBokoblin>> BLUE_BOKOBLIN = ENTITY_REGISTER.register("blue_bokoblin", () ->
             EntityType.Builder.of(BlueBokoblin::new, MobCategory.MONSTER)
-                    .sized(1.6F, 1.8F)
+                    .sized(0.6f, 1.8f)
                     .build("blue_bokoblin"));
 
     public static final RegistryObject<Item> RED_BOKOBLIN_EGG = ItemRegistry.RegisterEggEntity("red_bokoblin", RED_BOKOBLIN, 0xE07B00, 0x5F656B);

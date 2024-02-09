@@ -14,7 +14,7 @@ public class RedBokoblinRenderer extends HumanoidMobRenderer<Mob, PiglinModel<Mo
     private static final ResourceLocation TEXTURE = new ResourceLocation("modtest:textures/entity/bokoblin/bokoblin_red.png");
 
     public RedBokoblinRenderer(EntityRendererProvider.Context context) {
-        super(context, createModel(context.getModelSet(),ModelLayers.PIGLIN, false), 34);
+        super(context, createModel(context.getModelSet(),ModelLayers.PIGLIN, false), 0.8f);
     }
 
     private static PiglinModel<Mob> createModel(EntityModelSet modelSet, ModelLayerLocation location, boolean hideEars) {
