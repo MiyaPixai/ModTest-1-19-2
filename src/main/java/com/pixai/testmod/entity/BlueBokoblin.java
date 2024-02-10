@@ -12,7 +12,8 @@ import net.minecraft.world.level.Level;
 public class BlueBokoblin extends BokoblinBase{
     protected BlueBokoblin(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        mainHandChance.add(40, Items.AIR)
+        this.mainHandChance
+                .add(40, Items.AIR)
                 .add(5,Items.WOODEN_SWORD)
                 .add(5,Items.WOODEN_PICKAXE)
                 .add(5,Items.WOODEN_AXE)
@@ -24,6 +25,7 @@ public class BlueBokoblin extends BokoblinBase{
                 .add(5,Items.STONE_SHOVEL)
                 .add(5,Items.STONE_HOE)
                 .add(10,Items.BOW);
+        this.hornChance = 0.2f;
     }
 
     public static AttributeSupplier.Builder createAttributes(){

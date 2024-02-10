@@ -7,6 +7,7 @@ import com.pixai.testmod.ai.HealWithItemGoal;
 import com.pixai.testmod.util.RandomCollection;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.*;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import org.spongepowered.asm.logging.ILogger;
 
 import javax.annotation.Nullable;
 import java.time.LocalDate;
@@ -42,11 +44,14 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
     private boolean canAlert = false;
     private boolean isAlerted = false;
     private final SimpleContainer inventory = new SimpleContainer(4);
-    private static final List<Item> HEALING_ITEMS = Arrays.asList(Items.BEEF, Items.PORKCHOP, Items.MUTTON, Items.CHICKEN);
+    private static final List<Item> HEALING_ITEMS = Arrays.asList(Items.BEEF, Items.COOKED_BEEF,
+            Items.PORKCHOP, Items.COOKED_PORKCHOP,
+            Items.MUTTON, Items.COOKED_MUTTON,
+            Items.CHICKEN, Items.COOKED_CHICKEN);
 
     protected BokoblinBase(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        mainHandChance = new RandomCollection<Item>();
+        this.mainHandChance = new RandomCollection<Item>();
     }
 
     public boolean canAlert() {
@@ -77,19 +82,19 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
     }
 
     @Override
-    protected void setItemSlotAndDropWhenKilled(EquipmentSlot p_21469_, ItemStack p_21470_) {
-        super.setItemSlotAndDropWhenKilled(p_21469_, p_21470_);
-    }
-
-    @Override
     protected void populateDefaultEquipmentSlots(RandomSource source, DifficultyInstance difficulty) {
         mainHandChance.SetRandomSource(source);
         Item mainHand = mainHandChance.next();
         if (mainHand != Items.AIR) {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(mainHand));
+            this.setItemSlotAndDropWhenKilled(EquipmentSlot.MAINHAND, new ItemStack(mainHand));
         }
         if (source.nextFloat() < this.hornChance) {
-            this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.GOAT_HORN));
+            ItemStack horn = new ItemStack(Items.GOAT_HORN);
+            CompoundTag tag = horn.getOrCreateTag();
+            tag.putString("instrument", "dream_goat_horn");
+
+            horn.setTag(tag);
+            this.setItemSlotAndDropWhenKilled(EquipmentSlot.OFFHAND, horn);
             this.canAlert = true;
         }
     }
@@ -120,11 +125,12 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor levelAccessor, DifficultyInstance difficulty, MobSpawnType spawnType, @javax.annotation.Nullable SpawnGroupData groupData, @Nullable CompoundTag tag) {
         RandomSource randomsource = levelAccessor.getRandom();
         SpawnGroupData spawnGroupData = super.finalizeSpawn(levelAccessor, difficulty, spawnType, groupData, tag);
-        float f = difficulty.getSpecialMultiplier();
+//        float f = difficulty.getSpecialMultiplier();
         this.setCanPickUpLoot(true);
 
         this.populateDefaultEquipmentSlots(randomsource, difficulty);
         this.populateDefaultEquipmentEnchantments(randomsource, difficulty);
+
 
         return (SpawnGroupData) spawnGroupData;
     }

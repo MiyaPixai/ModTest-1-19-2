@@ -19,13 +19,15 @@ public class RedBokoblin extends BokoblinBase{
 
     protected RedBokoblin(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
-        mainHandChance.add(65,Items.AIR)
+        this.mainHandChance
+                .add(65,Items.AIR)
                 .add(5,Items.WOODEN_SWORD)
                 .add(5,Items.WOODEN_PICKAXE)
                 .add(5,Items.WOODEN_AXE)
                 .add(5,Items.WOODEN_SHOVEL)
                 .add(5,Items.WOODEN_HOE)
                 .add(10,Items.BOW);
+        this.hornChance = 0.10f;
     }
 
 
