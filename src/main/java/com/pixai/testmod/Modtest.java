@@ -31,7 +31,7 @@ public class Modtest
     public static final String MODID = "modtest";
     public static final ClientSetup client = new ClientSetup();
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public Modtest()
     {

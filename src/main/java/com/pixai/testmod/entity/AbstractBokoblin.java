@@ -1,7 +1,6 @@
 package com.pixai.testmod.entity;
 
 
-import com.pixai.testmod.Modtest;
 import com.pixai.testmod.ai.HealWithItemGoal;
 import com.pixai.testmod.ai.RudimentaryCookGoal;
 import com.pixai.testmod.ai.ScavengeGoal;
@@ -9,7 +8,6 @@ import com.pixai.testmod.util.RandomCollection;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.SimpleContainer;
@@ -30,25 +28,22 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.function.Predicate;
 
-public abstract class BokoblinBase extends Monster implements AlertableMob, HealableMob, RangedAttackMob, RudimentaryCookMob {
+public abstract class AbstractBokoblin extends Monster implements AlertableMob, HealableMob, RangedAttackMob, RudimentaryCookMob {
 
     private static final int INVENTORY_SIZE = 8;
-    private Goal bokoblinMobTarget;
     protected final RandomCollection<Item> mainHandChance;
     protected float hornChance;
     private boolean canAlert = false;
     private boolean isAlerted = false;
-    private SimpleContainer inventory = new SimpleContainer(INVENTORY_SIZE);
-    private final RangedBowAttackGoal<AbstractSkeleton> bowGoal = new RangedBowAttackGoal(this, 1.0, 30, 15.0F);
+    private final SimpleContainer inventory = new SimpleContainer(INVENTORY_SIZE);
+    private final RangedBowAttackGoal<AbstractBokoblin> bowGoal = new RangedBowAttackGoal<AbstractBokoblin>(this, 1.0, 30, 15.0F);
     private final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2, false);
 
-    protected BokoblinBase(EntityType<? extends Monster> entityType, Level world) {
+    protected AbstractBokoblin(EntityType<? extends Monster> entityType, Level world) {
         super(entityType, world);
         this.mainHandChance = new RandomCollection<Item>();
     }
@@ -76,7 +71,6 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
         }
         return false;
     }
-
     public boolean needHealing() {
         return this.getHealth() < this.getAttributeValue(Attributes.MAX_HEALTH) * 0.5;
     }
@@ -111,9 +105,7 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
     }
 
     public void performRangedAttack(LivingEntity p_32141_, float p_32142_) {
-        ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, (item) -> {
-            return item instanceof BowItem;
-        })));
+        ItemStack itemstack = this.getProjectile(this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, (item) -> item instanceof BowItem)));
         AbstractArrow abstractarrow = this.getArrow(itemstack, p_32142_);
         if (this.getMainHandItem().getItem() instanceof BowItem) {
             abstractarrow = ((BowItem) this.getMainHandItem().getItem()).customArrow(abstractarrow);
@@ -166,28 +158,11 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
                 this.take(item, item.getItem().getCount());
                 ItemStack stack = this.inventory.addItem(itemstack);
                 if (stack.isEmpty()) {
-                    Modtest.LOGGER.debug("Discarding Item");
                     item.discard();
                 } else {
                     itemstack.setCount(stack.getCount());
                 }
             }
-//            if (stackIndex != -1) {
-//                ItemStack targetStack = this.itemStacks.get(stackIndex);
-//
-//                if (targetStack.isEmpty()) {
-//                    this.itemStacks.set(stackIndex, itemstack);
-//                } else {
-//                    int countRemaining = itemStacks.get(stackIndex).getMaxStackSize() - itemStacks.get(stackIndex).getCount();
-//                    if (itemstack.getCount() > countRemaining) {
-//                        this.itemStacks.get(stackIndex).setCount(itemStacks.get(stackIndex).getMaxStackSize());
-//                        itemstack.split(countRemaining);
-//                    } else {
-//                        this.itemStacks.get(stackIndex).setCount(itemStacks.get(stackIndex).getCount() + itemstack.getCount());
-//                        pickedUp = true;
-//                    }
-//                }
-//            }
         }
 
         if (pickedUp) {
@@ -231,7 +206,7 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
 
     @Override
     protected void registerGoals() {
-        this.bokoblinMobTarget = new NearestAttackableTargetGoal(this, Animal.class, 10, false, false, (target) -> {
+        Goal bokoblinMobTarget = new NearestAttackableTargetGoal(this, Animal.class, 10, false, false, (target) -> {
             return (target instanceof Sheep || target instanceof Pig || target instanceof Cow) && !((Animal) target).isBaby();
         });
 
@@ -239,7 +214,7 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
         this.goalSelector.addGoal(3, new HealWithItemGoal(this));//if low hp, flee and heal
 
         this.goalSelector.addGoal(5, new ScavengeGoal(this, 0.8f, 20, 10));
-        this.goalSelector.addGoal(6, new RudimentaryCookGoal<BokoblinBase>(this, 0.75f));//cook food if fire camp nearby
+        this.goalSelector.addGoal(6, new RudimentaryCookGoal<AbstractBokoblin>(this, 0.75f));//cook food if fire camp nearby
         //this.goalSelector.addGoal(7, new DropInContainerGoal(this, true));//if inventory filled and container exists nearby
 
 
@@ -248,7 +223,7 @@ public abstract class BokoblinBase extends Monster implements AlertableMob, Heal
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));//Retaliate
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<Player>(this, Player.class, true));//hunt player
-        this.targetSelector.addGoal(6, this.bokoblinMobTarget);//hunt passive mobs
+        this.targetSelector.addGoal(6, bokoblinMobTarget);//hunt passive mobs
     }
 
     private void reassessAttackGoal() {

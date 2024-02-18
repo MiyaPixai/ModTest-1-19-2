@@ -1,14 +1,11 @@
 package com.pixai.testmod.ai;
 
-import com.pixai.testmod.Modtest;
 import com.pixai.testmod.util.EntityGetterUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
