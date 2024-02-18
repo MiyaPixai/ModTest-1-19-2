@@ -31,7 +31,7 @@ public class EntityRegistry {
                     .build("blue_bokoblin"));
 
     public static final RegistryObject<Item> RED_BOKOBLIN_EGG = ItemRegistry.RegisterEggEntity("red_bokoblin", RED_BOKOBLIN, 0xE07B00, 0x5F656B);
-    public static final RegistryObject<Item> BUE_BOKOBLIN_EGG = ItemRegistry.RegisterEggEntity("blue_bokoblin", BLUE_BOKOBLIN, 0xE07B00, 0x5F656B);
+    public static final RegistryObject<Item> BUE_BOKOBLIN_EGG = ItemRegistry.RegisterEggEntity("blue_bokoblin", BLUE_BOKOBLIN, 0x0084C2, 0x5F656B);
 
 
     @SubscribeEvent
